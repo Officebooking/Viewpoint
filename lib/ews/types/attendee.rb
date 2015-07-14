@@ -18,10 +18,16 @@
 
 module Viewpoint::EWS::Types
 
-  # This represents a Mailbox object in the Exchange data store
-  # @see http://msdn.microsoft.com/en-us/library/aa565036.aspx MSDN docs
-  # @todo Design a Class method that resolves to an Array of MailboxUsers
   class Attendee < MailboxUser
+
+    attr_accessor :response_type, :last_response_time
+
+    def initialize(ews, mbox_user, response_type, last_response_time)
+      super(ews, mbox_user)
+      @response_type = response_type
+      @last_response_time = last_response_time
+    end
+
   end # Attendee
 
 end # Viewpoint::EWS::Types
