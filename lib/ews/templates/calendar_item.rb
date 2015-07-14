@@ -30,7 +30,7 @@ module Viewpoint::EWS
         structure = {}
         structure[:message_disposition] = (draft ? 'SaveOnly' : 'SendAndSaveCopy')
         # options
-        structure[:send_meeting_invitations] = (opts.has_key?(:send_meeting_invitations) ? opts[:send_meeting_invitations] : 'SendToNone')
+        structure[:send_meeting_invitations] = (opts.has_key?(:send_meeting_invitations) ? opts[:send_meeting_invitations] : 'SendToAllAndSaveCopy')
 
         if self.saved_item_folder_id
           if self.saved_item_folder_id.kind_of?(Hash)
