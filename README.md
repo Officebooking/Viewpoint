@@ -1,9 +1,18 @@
+## Tests
+
+You can run the tests with `geordi rspec spec/`.
+
+
+The following is a copy of the original README.md:
+
 # Viewpoint for Exchange Web Services
 [![Build Status](https://img.shields.io/travis/WinRb/Viewpoint.svg?branch=master)](https://travis-ci.org/WinRb/Viewpoint)
 [![Gem Version](https://img.shields.io/gem/v/viewpoint.svg)](https://rubygems.org/gems/viewpoint)
 [![License](https://img.shields.io/github/license/WinRb/Viewpoint.svg)](https://github.com/WinRb/Viewpoint/blob/master/LICENSE)
 [![Wiki](https://img.shields.io/badge/docs-wiki-lightgrey.svg)](http://github.com/WinRb/Viewpoint/wiki)
 [![Documentation](https://img.shields.io/badge/docs-rdoc-lightgrey.svg)](http://www.rubydoc.info/github/WinRb/Viewpoint/frames)
+
+http://github.com/zenchild/Viewpoint/wiki
 
 Viewpoint for EWS provides a thin Ruby layer on top of Microsoft Exchange
 Web Services(EWS). It also includes a bunch of model classes that add an
