@@ -98,8 +98,10 @@ module Viewpoint::EWS::Types
         if rm && rm.success?
           self.get_all_properties!
           self
+        elsif rm
+          raise EwsCreateItemError, "Could not update calendar item. #{rm.code}: #{rm.message_text}"
         else
-          raise EwsCreateItemError, "Could not update calendar item. #{rm.code}: #{rm.message_text}" unless rm
+          raise StandardError("No response message received.")
         end
       end
 
