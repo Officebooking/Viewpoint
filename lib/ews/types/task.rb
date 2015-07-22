@@ -13,6 +13,7 @@ module Viewpoint::EWS::Types
       reminder?:         [:reminder_is_set, :text],
       percent_complete:  [:percent_complete, :text],
       status:            [:status, :text],
+      owner:             [:owner, :text],
    }
 
     TASK_KEY_TYPES = {
