@@ -378,26 +378,13 @@ module Viewpoint::EWS::Types
       users.collect{|u| build_mailbox_user(u[:mailbox][:elems])}
     end
 
-    def build_attendee_user(mbox_ews, response_type, last_response_time)
-      Attendee.new(ews, mbox_ews, response_type, last_response_time)
-    end
-
-    def build_attendees_users(users)
-      return [] if users.nil?
+    def build_attendees_users(ews_users)
       attendees = []
-      users.each do |user|
-        mailbox, response, response_time = nil, nil, nil
-        user[:attendee][:elems].each do |a|
-          if a[:mailbox]
-            mailbox = a[:mailbox][:elems]
-          elsif a[:response_type]
-            response = a[:response_type][:text]
-          elsif a[:last_response_time]
-            response_time = a[:last_response_time][:text]
+      ews_users.each do |attendee|
+        attendee[:attendee][:elems].each do |element|
+          if element[:mailbox]
+            attendees << Attendee.new(ews, attendee)
           end
-        end
-        if mailbox and response
-          attendees << build_attendee_user(mailbox, response, response_time)
         end
       end
       attendees

@@ -22,10 +22,18 @@ module Viewpoint::EWS::Types
 
     attr_accessor :response_type, :last_response_time
 
-    def initialize(ews, mbox_user, response_type, last_response_time)
+    def initialize(ews, user_hash)
+      mbox_user = nil
+      user_hash[:attendee][:elems].each do |a|
+        if a[:mailbox]
+          mbox_user = a[:mailbox][:elems]
+        elsif a[:response_type]
+          @response_type = a[:response_type][:text]
+        elsif a[:last_response_time]
+          @last_response_time = a[:last_response_time][:text]
+        end
+      end
       super(ews, mbox_user)
-      @response_type = response_type
-      @last_response_time = last_response_time
     end
 
   end # Attendee

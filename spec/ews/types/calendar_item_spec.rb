@@ -13,7 +13,7 @@ describe Viewpoint::EWS::Types::CalendarItem do
 
   describe "#build_attendees_users" do
 
-    let(:users_data) { [
+    let(:users_data) { [ # this is the way the data comes to #build_attendees_users
       {:attendee=>{:elems=>[
         {:mailbox=>{:elems=>[
           {:name=>{:text=>"user2"}},
@@ -31,6 +31,12 @@ describe Viewpoint::EWS::Types::CalendarItem do
           {:mailbox_type=>{:text=>"Mailbox"}}]}},
         {:response_type=>{:text=>"Unknown"}}]}}
     ] }
+
+    it "should return an empty array if there are no attendees" do
+      calitem = described_class.new({}, {})
+      calitem.send(:build_attendees_users, [{ attendee: { elems: [] } }]).should == []
+      calitem.send(:build_attendees_users, []).should == []
+    end
 
     it "should return attendees which support response and response time" do
       calitem = described_class.new({}, {})
