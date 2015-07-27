@@ -2,6 +2,10 @@
 
 You can run the tests with `geordi rspec spec/`.
 
+## Debugging
+
+Add `require 'pry'` before calling `binding.pry`.
+
 
 The following is a copy of the original README.md:
 
