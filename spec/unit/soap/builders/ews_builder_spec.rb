@@ -65,4 +65,5 @@ describe Viewpoint::EWS::SOAP::EwsBuilder do
     end
 
   end
+
 end

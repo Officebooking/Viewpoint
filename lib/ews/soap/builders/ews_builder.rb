@@ -85,22 +85,26 @@ module Viewpoint::EWS::SOAP
     def build_xml!(elems)
       case elems.class.name
       when 'Hash'
-        keys = elems.keys
-        vals = elems.values
-        if(keys.length > 1 && !vals.is_a?(Hash))
-          raise "invalid input: #{elems}"
+        if attendees = elems[:required_attendees]
+          required_attendees!(attendees)
+        else
+          keys = elems.keys
+          vals = elems.values
+          if(keys.length > 1 && !vals.is_a?(Hash))
+            raise "invalid input: #{elems}"
+          end
+          vals = vals.first.clone
+          se = vals.delete(:sub_elements)
+          txt = vals.delete(:text)
+          xmlns_attribute = vals.delete(:xmlns_attribute)
+
+          node = @nbuild.send(camel_case(keys.first), txt, vals) {|x|
+            build_xml!(se) if se
+          }
+
+          # Set node level namespace
+          node.xmlns = NAMESPACES["xmlns:#{xmlns_attribute}"] if xmlns_attribute
         end
-        vals = vals.first.clone
-        se = vals.delete(:sub_elements)
-        txt = vals.delete(:text)
-        xmlns_attribute = vals.delete(:xmlns_attribute)
-
-        node = @nbuild.send(camel_case(keys.first), txt, vals) {|x|
-          build_xml!(se) if se
-        }
-
-        # Set node level namespace
-        node.xmlns = NAMESPACES["xmlns:#{xmlns_attribute}"] if xmlns_attribute
       when 'Array'
         elems.each do |e|
           build_xml!(e)
@@ -990,11 +994,27 @@ module Viewpoint::EWS::SOAP
       }
     end
 
-    # @todo support ResponseType, LastResponseTime: http://msdn.microsoft.com/en-us/library/aa580339.aspx
     def attendee!(a)
+      wrap = Array.wrap(a)
       nbuild[NS_EWS_TYPES].Attendee {
-        mailbox!(a[:mailbox])
+        wrap.each do |item|
+          if item[:mailbox]
+            mailbox!(item[:mailbox])
+          elsif item[:response_type]
+            response_type!(item[:response_type])
+          elsif item[:last_response_time]
+            last_response_time!(item[:last_response_time])
+          end
+        end
       }
+    end
+
+    def response_type!(type)
+      nbuild[NS_EWS_TYPES].ResponseType(type)
+    end
+
+    def last_response_time!(time)
+      nbuild[NS_EWS_TYPES].LastResponseTime(format_time time)
     end
 
     def start!(st)
