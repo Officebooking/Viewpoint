@@ -393,7 +393,8 @@ module Viewpoint::EWS::SOAP
     end
 
     def user_oof_settings!(opts)
-      nbuild[NS_EWS_TYPES].UserOofSettings {
+      nbuild.UserOofSettings { |node|
+        node.parent[:xmlns] = NAMESPACES["xmlns:#{NS_EWS_TYPES}"]
         nbuild.OofState(camel_case(opts[:oof_state]))
         nbuild.ExternalAudience(camel_case(opts[:external_audience])) if opts[:external_audience]
         duration!(opts[:duration]) if opts[:duration]
