@@ -399,7 +399,7 @@ module Viewpoint::EWS::SOAP
         duration!(opts[:duration]) if opts[:duration]
         nbuild.InternalReply {
           nbuild.Message(opts[:internal_reply])
-        } if opts[:external_reply]
+        } if opts[:internal_reply]
         nbuild.ExternalReply {
           nbuild.Message(opts[:external_reply])
         } if opts[:external_reply]
