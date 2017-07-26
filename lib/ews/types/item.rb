@@ -360,8 +360,9 @@ module Viewpoint::EWS::Types
       {}.tap do |h|
         occurrences.collect do |a|
           elems = a[:occurrence][:elems]
-
           h[DateTime.parse(elems.find{|e| e[:original_start]}[:original_start][:text])] = {
+            id: elems.find{|e| e[:item_id]}[:item_id][:attribs][:id],
+            change_key: elems.find{|e| e[:item_id]}[:item_id][:attribs][:change_key],
             start: elems.find{|e| e[:start]}[:start][:text],
             end: elems.find{|e| e[:end]}[:end][:text]
           }
