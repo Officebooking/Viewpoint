@@ -104,13 +104,64 @@ module Viewpoint::EWS::Types
           raise StandardError("No response message received.")
         end
       end
+    end
 
+    def update_tag(tag, property_set_id, property_name = 'Viewpoint', options = {})
+      data = {}
+      data[:conflict_resolution] = options[:conflict_resolution] || 'AutoResolve'
+      data[:send_meeting_invitations_or_cancellations] = options[:send_meeting_invitations_or_cancellations] || 'SendToNone'
+      data[:item_changes] = [{item_id: self.item_id, updates: [
+        {
+          :set_item_field => {
+            :extended_field_uri => {
+              :property_set_id =>  property_set_id,
+              :property_name =>    property_name,
+              :property_type =>    'String'
+            },
+            :calendar_item => {
+              :sub_elements => {
+                :extended_property => {
+                  :sub_elements => [
+                    { :'ExtendedFieldURI' => {
+                        :'PropertySetId' =>  property_set_id,
+                        :'PropertyName' =>   property_name,
+                        :'PropertyType' =>   'String'
+                      } },
+                    { :value => { :text => tag } }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]}]
+      rm = ews.update_item(data).response_messages.first
+      if rm && rm.success?
+        # self.get_tag(property_set_id, property_name)
+        self
+      elsif rm
+        raise EwsCreateItemError, "Could not update calendar item. #{rm.code}: #{rm.message_text}"
+      else
+        raise StandardError("No response message received.")
+      end
+    end
+
+    def get_tag(property_set_id, property_name = 'Viewpoint')
+      @ews_item = get_item(base_shape: :default,
+        :additional_properties => {
+          extended_field_uri: {
+            property_set_id:  property_set_id,
+            property_name:    property_name,
+            property_type:    'String'
+          }
+        }
+      )
+      simplify!
     end
 
     def duration_in_seconds
       iso8601_duration_to_seconds(duration)
     end
-
 
     private
 

@@ -8,7 +8,7 @@ module Viewpoint::EWS::Types
     # @param [DateTime] start_date the time to start fetching Items from
     # @param [DateTime] end_date the time to stop fetching Items from
     def items_between(start_date, end_date, opts={})
-      items do |obj|
+      items(opts) do |obj|
         obj.restriction = { :and =>
           [
             {:is_greater_than_or_equal_to =>
@@ -23,6 +23,34 @@ module Viewpoint::EWS::Types
                 {:field_uRI_or_constant=>{:constant => {:value =>end_date}}}
               ]
             }
+          ]
+        }
+      end
+    end
+
+    def items_for_tag(tag, property_id, property_name = 'Viewpoint', opts={})
+      opts = opts.merge({
+        :item_shape  => {
+          :base_shape => :default,
+          :additional_properties => {
+            extended_field_uri: {
+              property_set_id:  property_id,
+              property_name:    property_name,
+              property_type:    'String'
+            }
+          }
+        }
+      })
+      items(opts) do |obj|
+        obj.restriction = {
+          :is_equal_to => [
+            { :extended_field_uri => {
+                :property_set_id  => property_id,
+                :property_name    => property_name,
+                :property_type    => 'String'
+              }
+            },
+            {:field_uRI_or_constant =>{:constant => {:value=>tag}}}
           ]
         }
       end

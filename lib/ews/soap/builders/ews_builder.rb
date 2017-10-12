@@ -833,6 +833,9 @@ module Viewpoint::EWS::SOAP
 
     def calendar_item!(item)
       nbuild[NS_EWS_TYPES].CalendarItem {
+        if item[:extended_properties]
+          extended_properties! item.delete(:extended_properties)
+        end
         item.each_pair {|k,v|
           self.send("#{k}!", v)
         }
